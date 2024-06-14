@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.flex {
+  display: flex;
+}
+.flex-col{
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-align {
+  display: flex;
+  align-items: center;
+}
+.flex-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.all-tasks{
+    background-color: #e9ecef;
+}
+
+.body{
+    height: 100vh;
+    
+}
+

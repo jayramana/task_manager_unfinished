@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { TfiCheck } from "react-icons/tfi";
 import { TfiClose } from "react-icons/tfi";
 import { useNavigate } from "react-router-dom";
+import { IoIosAdd } from "react-icons/io";
 import "../styles.css"
 // eslint-disable-next-line no-unused-vars
 import "../index.css";
@@ -110,43 +111,45 @@ const Body = () => {
   console.log(data)
   return (
     <main className="body flex-col flex-align">
-      <h1 style={{ alignSelf: "start" }}>Task Manager</h1>
-      <div className="navigation flex items-center gap-[.5rem]">
-        <button onClick={all_task_nav}>All Tasks</button>
-        <button onClick={nav_comp}>Completed</button>
-        <button onClick={nav_pending}>Pending</button>
+      <h1 style={{ alignSelf: "start" }} className="text-[2rem] font-mono font-bold">Task Manager</h1>
+      <div className="navigation flex items-center gap-[.5rem] p-[2rem]">
+        <button onClick={all_task_nav} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"><p className="font-mono">All Tasks</p></button>
+        <button onClick={nav_comp} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"><p className="font-mono">Completed</p></button>
+        <button onClick={nav_pending} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"><p className="font-mono">Pending</p></button>
       </div>
-      <div className="add">
+      <div className="add flex gap-[.5rem] items-baseline">
         <input
           type="text"
           name=""
           id=""
           value={addTask}
           placeholder="Add a Task"
+          className="bg-[#f1f3f5] focus:outline-none px-[.8rem] py-[.4rem] rounded-lg font-mono w-[40vw] mb-[2rem]"
           onChange={(e) => {
             setAddTask(e.target.value);
           }}
         />
-        <button onClick={add_Task}>Add</button>
+        <button onClick={add_Task} className="flex items-center px-[.8rem] py-[.4rem] rounded-md hover:bg-[#37b24d]"><IoIosAdd/><p className="font-mono">Add</p></button>
       </div>
-      <div className="all-tasks">
+      <div className="all-tasks w-[70vw] flex flex-col gap-[1rem]">
         {data.map((item) => (
-          <div className="flex items-center" key={item._id}>
+          <div className="flex items-center border-solid border-[2px] border-black justify-between" key={item._id}>
             <input
               type="checkbox"
               name=""
               id=""
               checked={item.completed}
+              className="mr-[2rem]"
               onChange={() => edit_Checked(item._id)}
             />
             {edit && editId === item._id ? (
               <div className="flex gap-[.5rem]">
-                <input type="text" value={item.task_name} onChange={(e)=>{setEditname(e.target.value)}} />
+                <input type="text" value={item.task_name} className="self-start" onChange={(e)=>{setEditname(e.target.value)}} />
                 <TfiCheck onClick={()=>updateTaskname(item._id)} />
                 <TfiClose onClick={()=>Cross()} />
               </div>
             ) : (
-              <p>{item.task_name}</p>
+              <p className="w-[100%] self-start">{item.task_name}</p>
             )}
             <div className="flex gap-[.5rem]">
               <button

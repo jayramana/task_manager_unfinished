@@ -26,21 +26,21 @@ const Pending = () => {
   }
   console.log(data);
   return (
-    <main>
-      <h1>Completed Tasks</h1>
-      <div className="navigation flex items-center gap-[.5rem]">
-        <button onClick={all_task_nav}>All Tasks</button>
-        <button onClick={nav_comp}>Completed</button>
-        <button onClick={nav_pending}>Pending</button>
+    <main className="h-screen flex flex-col items-center">
+      <h1 className="self-start font-mono text-[2rem] font-bold">Pending Tasks</h1>
+      <div className="navigation flex items-center gap-[.5rem] p-[2rem]">
+        <button onClick={all_task_nav}  className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl">All Tasks</button>
+        <button onClick={nav_comp} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl">Completed</button>
+        <button onClick={nav_pending} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl">Pending</button>
       </div>
       <div>
       {data
         .filter((item) => item.completed === false)
         .map((items) => (
-          <div key={items._id} className="flex gap-[.5rem]">
-            <p>{items.task_name}</p>
+          <div key={items._id} className="flex gap-[.5rem] w-[70vw] bg-[#F5F5F5] justify-between">
+            <p className="font-mono text-[#CE2029] text-lg">{items.task_name}</p>
             <button>
-              <FaExclamation/>
+              <FaExclamation className="text-[#A91101]"/>
             </button>
           </div>
         ))}

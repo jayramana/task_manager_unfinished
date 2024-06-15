@@ -3,13 +3,8 @@
     padding: 0;
     box-sizing: border-box;
 }
-.flex {
-  display: flex;
-}
-.flex-col{
-    display: flex;
-    flex-direction: column;
-}
+
+
 
 .flex-align {
   display: flex;
@@ -27,5 +22,8 @@
 .body{
     height: 100vh;
     
+}
+.align-start{
+  align-self: flex-start;
 }
 

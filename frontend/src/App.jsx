@@ -117,9 +117,9 @@
 // export default App;
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Body from "./components/Body.jsx"
-import Completed from "./components/Completed.jsx"
-import Pending from "./components/Pending.jsx"
+import Body from "./files/Body.jsx"
+import Completed from "./files/Completed.jsx"
+import Pending from "./files/Pending.jsx"
 
 const App = () => {
   return (

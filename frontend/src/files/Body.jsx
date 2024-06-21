@@ -11,33 +11,54 @@ import { MdOutlinePendingActions } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
 import { FaBan } from "react-icons/fa";
 import { IoIosAdd } from "react-icons/io";
-import { BsThreeDots } from "react-icons/bs";
 import { TfiArrowDown } from "react-icons/tfi";
 import "../styles.css";
-import { FaCircle } from "react-icons/fa6"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { FaClock } from "react-icons/fa6";
 import { TfiArrowUp } from "react-icons/tfi";
 // eslint-disable-next-line no-unused-vars
 import "../index.css";
 const Body = () => {
   const [data, setData] = useState([]);
   const [addTask, setAddTask] = useState("");
+  const [status, setStatus] = useState("");
+  const [priority, setPriority] = useState("");
   const [edit, setEdit] = useState(false);
   const [editId, seteditId] = useState(0);
+  const [oldname, setOldname] = useState("");
+  const [newObj, setObj] = useState([]);
   const [editname, setEditname] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
@@ -99,22 +120,24 @@ const Body = () => {
     setData((prevData) => prevData.filter((item) => item._id !== id));
   };
 
-  const updateTaskname = async (id) => {
-    const newobj = { task_name: editname };
-    try {
-      const res = await axios.patch(
-        `${import.meta.env.VITE_BACKEND_URI}/${id}`,
-        newobj
-      );
-      const response = res.data.task;
-      setData((prevData) =>
-        prevData.map((item) => (item._id === id ? response : item))
-      );
-      setEdit(false);
-      setEditname("");
-    } catch {
-      console.log(`error`);
-    }
+  const updateTaskDetails = async (id) => {
+    const newobj = { task_name: editname, status: status, priority: priority };
+    console.log(id);
+    const res = await axios.patch(
+      `${import.meta.env.VITE_BACKEND_URI}/${id}`,
+      newobj
+    );
+    const response = res.data.task;
+    console.log(response);
+    setData((prevData) =>
+      prevData.map((item) => (item._id === id ? response : item))
+    );
+    setEdit(false);
+    setEditname("");
+    setStatus(""); // Reset status
+    setPriority(""); // Reset priority
+    //   console.log("Updated data:", data);
+    //   console.log(`Error updating task: ${error}`);
   };
   const Cross = () => {
     setData((prevData) => prevData.map((item) => item));
@@ -203,8 +226,6 @@ const Body = () => {
                     setEditname(e.target.value);
                   }}
                 />
-                <TfiCheck onClick={() => updateTaskname(item._id)} />
-                <TfiClose onClick={() => Cross()} />
               </div>
             ) : (
               <p className="w-[100%] self-start font-mono text-lg">
@@ -212,17 +233,17 @@ const Body = () => {
               </p>
             )}
             <div>
-              {item.status === "Pending" ? (
+              {item.status === "Pending".toLowerCase() ? (
                 <div className="flex items-center">
-                  <MdOutlinePendingActions />
-                  <p>{item.status}</p>
+                  <FaClock className="text-[#ED9121]" />
+                  <p className="text-[#ED9121] font-400 font-mono">Pending</p>
                 </div>
-              ) : item.status === "Completed" ? (
+              ) : item.status === "Completed".toLowerCase() ? (
                 <div className="flex items-center">
-                  <SiTicktick />
-                  <p>{item.status}</p>
+                  <SiTicktick className="text-[#00A550]"/>
+                  <p className="text-[#00A550] font-400 font-mono">Completed</p>
                 </div>
-              ) : item.status === "Abandoned" ? (
+              ) : item.status === "Abandoned".toLowerCase() ? (
                 <div className="flex items-center">
                   <FaBan />
                   <p>{item.status}</p>
@@ -230,60 +251,146 @@ const Body = () => {
               ) : null}
             </div>
             <div>
-              {item.priority === "High" ? (
+              {item.priority === "High".toLowerCase() ? (
                 <div className="flex items-center">
                   <TfiArrowUp />
-                  <p>{item.priority}</p>
+                  <p className="font-mono font-400">High</p>
                 </div>
-              ) : item.priority === "Low" ? (
+              ) : item.priority === "Low".toLowerCase() ? (
                 <div className="flex items-center">
                   <TfiArrowDown />
-                  <p>{item.priority}</p>
+                  <p className="font-mono font-400">Low</p>
                 </div>
               ) : null}
             </div>
             <div className="flex gap-[.5rem]">
-             
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="bg-transparent"><BsThreeDots/></Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>Operations</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setEdit(true);
-                        seteditId(item._id);
-                      }}
-                    >
-                      Edit Task Name
-                      <DropdownMenuShortcut>
-                        <MdEdit />
-                      </DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        deleteTask(item._id);
-                      }}
-                    >
-                      Delete
-                      <DropdownMenuShortcut>
-                        <MdDelete />
-                      </DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      Edit Status
-                      <DropdownMenuShortcut><FaCircle/></DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      Edit Priority
-                      <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      seteditId(item._id);
+                      setOldname(item.task_name);
+                    }}
+                    className="transition-all duration-500 hover:text-[#FFBF00]"
+                  >
+                    <MdEdit  />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="font-mono text-xl">
+                      Edit Task Details
+                    </DialogTitle>
+                    <DialogDescription className="font-mono">
+                      Make changes to your task here. Click save when you are
+                      done
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right font-mono">
+                        Task Name
+                      </Label>
+                      <Input
+                        id="name"
+                        defaultValue={oldname}
+                        onChange={(e) => setEditname(e.target.value)}
+                        className="col-span-3 font-mono"
+                        required
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label
+                        htmlFor="username"
+                        className="text-right font-mono"
+                      >
+                        Status
+                      </Label>
+                      <Select onValueChange={(e) => setStatus(e)}>
+                        <SelectTrigger className="w-[340%]">
+                          <SelectValue placeholder="Select a Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup value={status}>
+                            <SelectLabel className="font-mono">
+                              Available Status
+                            </SelectLabel>
+                            <SelectItem value="completed" className="font-mono">
+                              Completed
+                            </SelectItem>
+                            <SelectItem value="pending" className="font-mono">
+                              Pending
+                            </SelectItem>
+                            <SelectItem value="abandoned" className="font-mono">
+                              Abandoned
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label
+                        htmlFor="username"
+                        className="text-right font-mono"
+                      >
+                        Priority
+                      </Label>
+                      <Select onValueChange={(e) => setPriority(e)}>
+                        <SelectTrigger className="w-[340%]">
+                          <SelectValue placeholder="Select a Priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup value={priority}>
+                            <SelectLabel className="font-mono">
+                              Available Priorities
+                            </SelectLabel>
+                            <SelectItem value="high" className="font-mono">
+                              High
+                            </SelectItem>
+                            <SelectItem value="low" className="font-mono">
+                              Low
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogTrigger asChild>
+                      <Button
+                        type="submit"
+                        onClick={() => {
+                          updateTaskDetails(item._id);
+                        }}
+                      >
+                        Save changes
+                      </Button>
+                    </DialogTrigger>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="hover:text-[#FF0000]"><MdDelete/></Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => { deleteTask(item._id) }} className="hover:bg-[#FF0000]">Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         ))}

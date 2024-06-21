@@ -33,11 +33,11 @@ const Pending = () => {
         <button onClick={nav_comp} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"><p className="font-mono">Completed</p></button>
         <button onClick={nav_pending} className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"><p className="font-mono">Pending</p></button>
       </div>
-      <div>
+      <div className="flex flex-col gap-[2rem]">
       {data
-        .filter((item) => item.completed === false)
+        .filter((item) => item.status === "pending")
         .map((items) => (
-          <div key={items._id} className="flex gap-[.5rem] w-[70vw] bg-[#F5F5F5] justify-between p-[1rem] border-b-2 border-black">
+          <div key={items._id} className="flex gap-[.5rem] w-[70vw] bg-[#F5F5F5] justify-between p-[1rem] rounded-xl shadow-lg">
             <p className="font-mono text-[#CE2029] text-lg">{items.task_name}</p>
             <button>
               <FaExclamation className="text-[#A91101]"/>

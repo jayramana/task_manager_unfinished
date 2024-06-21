@@ -202,20 +202,13 @@ const Body = () => {
           <p className="font-mono">Add</p>
         </button>
       </div>
-      <div className="all-tasks w-[70vw] flex flex-col gap-[1rem]">
+      <div className=" w-[70vw] flex flex-col gap-[1rem]">
         {data.map((item) => (
           <div
-            className="flex items-center border-b-2 border-black justify-between p-[.5rem]"
+            className="flex bg-[#e9ecef] shadow-lg  rounded-lg items-center  justify-between p-[.5rem] gap-[.5rem]"
             key={item._id}
           >
-            <input
-              type="checkbox"
-              name=""
-              id=""
-              checked={item.completed}
-              className="mr-[2rem]"
-              onChange={() => edit_Checked(item._id)}
-            />
+            
             {edit && editId === item._id ? (
               <div className="flex gap-[.5rem]">
                 <input
@@ -228,25 +221,25 @@ const Body = () => {
                 />
               </div>
             ) : (
-              <p className="w-[100%] self-start font-mono text-lg">
+              <p className="w-[100%] pl-[1rem] mt-[.3rem] self-start font-mono text-lg">
                 {item.task_name}
               </p>
             )}
             <div>
               {item.status === "Pending".toLowerCase() ? (
-                <div className="flex items-center">
+                <div className="flex items-center gap-[.1rem]">
                   <FaClock className="text-[#ED9121]" />
                   <p className="text-[#ED9121] font-400 font-mono">Pending</p>
                 </div>
               ) : item.status === "Completed".toLowerCase() ? (
-                <div className="flex items-center">
+                <div className="flex items-center gap-[.1rem]">
                   <SiTicktick className="text-[#00A550]"/>
                   <p className="text-[#00A550] font-400 font-mono">Completed</p>
                 </div>
               ) : item.status === "Abandoned".toLowerCase() ? (
-                <div className="flex items-center">
-                  <FaBan />
-                  <p>{item.status}</p>
+                <div className="flex items-center gap-[.1rem]">
+                  <FaBan className="text-[#f03e3e]" />
+                  <p className="text-[#f03e3e] font-400 font-mono">Abandoned</p>
                 </div>
               ) : null}
             </div>
@@ -272,7 +265,7 @@ const Body = () => {
                       seteditId(item._id);
                       setOldname(item.task_name);
                     }}
-                    className="transition-all duration-500 hover:text-[#FFBF00]"
+                    className="transition-all duration-300 hover:text-[#FFBF00]"
                   >
                     <MdEdit  />
                   </Button>
@@ -374,7 +367,7 @@ const Body = () => {
             <div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="hover:text-[#FF0000]"><MdDelete/></Button>
+                  <Button variant="outline" className="transition-all duration-300 hover:text-[#FF0000]"><MdDelete/></Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>

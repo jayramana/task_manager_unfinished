@@ -4,15 +4,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { MdEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import { TfiCheck } from "react-icons/tfi";
-import { TfiClose } from "react-icons/tfi";
+
 import { useNavigate } from "react-router-dom";
-import { MdOutlinePendingActions } from "react-icons/md";
 import { SiTicktick } from "react-icons/si";
 import { FaBan } from "react-icons/fa";
 import { IoIosAdd } from "react-icons/io";
 import { TfiArrowDown } from "react-icons/tfi";
 import "../styles.css";
+import Done from "../assets/done.png"
 import {
   Select,
   SelectContent,
@@ -72,23 +71,6 @@ const Body = () => {
     getAlldata();
   }, []);
 
-  const edit_Checked = async (id) => {
-    const edit_obj = data.filter((item) => item._id === id);
-    edit_obj.map(async (new_item) => {
-      const new_obj = {
-        completed: !new_item.completed,
-      };
-      const response = await axios.patch(
-        `${import.meta.env.VITE_BACKEND_URI}/${id}`,
-        new_obj
-      );
-      const upd = response.data.task;
-      console.log(upd);
-      setData((prevData) =>
-        prevData.map((item) => (item._id === id ? upd : item))
-      );
-    });
-  };
   useEffect(() => {
     console.log(edit);
   }, [edit]);
@@ -139,48 +121,38 @@ const Body = () => {
     //   console.log("Updated data:", data);
     //   console.log(`Error updating task: ${error}`);
   };
-  const Cross = () => {
-    setData((prevData) => prevData.map((item) => item));
-    setEdit(false);
-  };
 
-  const nav_comp = () => {
-    navigate("/completed");
-  };
-  const nav_pending = () => {
-    navigate("/pending");
-  };
-  const all_task_nav = () => {
-    navigate("/");
-  };
   console.log(data);
   return (
     <main className="body flex-col flex-align">
+      <div className="flex gap-[.5rem] items-center self-start">
       <h1
         style={{ alignSelf: "start" }}
-        className="text-[2rem] font-mono font-bold"
+        className="text-[2rem] font-mono font-bold flex gap-[1rem]"
       >
-        Task Manager
+        <span>Task</span> <span>Manager</span>
       </h1>
-      <div className="navigation flex items-center gap-[.5rem] p-[2rem]">
-        <button
-          onClick={all_task_nav}
-          className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"
+      <img src={Done} alt="logo" className="h-[24px] "/>
+
+      </div>
+      <div className="navigation self-start  gap-[.5rem] pl-[2rem] pt-[2rem]">
+        <Select
+          onValueChange={(e) => {
+            navigate(`${e}`);
+          }}
         >
-          <p className="font-mono">All Tasks</p>
-        </button>
-        <button
-          onClick={nav_comp}
-          className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"
-        >
-          <p className="font-mono">Completed</p>
-        </button>
-        <button
-          onClick={nav_pending}
-          className="bg-[#e03131] text-white px-[1rem] py-[.5rem] rounded-2xl"
-        >
-          <p className="font-mono">Pending</p>
-        </button>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="/">All Tasks</SelectItem>
+              <SelectItem value="/completed">Completed</SelectItem>
+              <SelectItem value="/pending">Pending</SelectItem>
+              <SelectItem value="/abandoned">Abandoned</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <div className="add flex gap-[.5rem] items-baseline">
         <input
@@ -208,7 +180,21 @@ const Body = () => {
             className="flex bg-[#e9ecef] shadow-lg  rounded-lg items-center  justify-between p-[.5rem] gap-[.5rem]"
             key={item._id}
           >
-            
+            <div>
+              <p
+                className={
+                  item.status === "pending"
+                    ? `bg-[#ED9121]`
+                    : item.status === "completed"
+                    ? `bg-[#00A550]`
+                    : item.status === "abandoned"
+                    ? `bg-[#f03e3e]`
+                    : `bg-black`
+                }
+              >
+                .
+              </p>
+            </div>
             {edit && editId === item._id ? (
               <div className="flex gap-[.5rem]">
                 <input
@@ -233,7 +219,7 @@ const Body = () => {
                 </div>
               ) : item.status === "Completed".toLowerCase() ? (
                 <div className="flex items-center gap-[.1rem]">
-                  <SiTicktick className="text-[#00A550]"/>
+                  <SiTicktick className="text-[#00A550]" />
                   <p className="text-[#00A550] font-400 font-mono">Completed</p>
                 </div>
               ) : item.status === "Abandoned".toLowerCase() ? (
@@ -246,13 +232,13 @@ const Body = () => {
             <div>
               {item.priority === "High".toLowerCase() ? (
                 <div className="flex items-center">
-                  <TfiArrowUp />
-                  <p className="font-mono font-400">High</p>
+                  <TfiArrowUp className="text-[#c92a2a]" />
+                  <p className="font-mono font-400 text-[#c92a2a]">High</p>
                 </div>
               ) : item.priority === "Low".toLowerCase() ? (
                 <div className="flex items-center">
-                  <TfiArrowDown />
-                  <p className="font-mono font-400">Low</p>
+                  <TfiArrowDown className="text-[#66a80f]" />
+                  <p className="font-mono font-400 text-[#66a80f]">Low</p>
                 </div>
               ) : null}
             </div>
@@ -267,7 +253,7 @@ const Body = () => {
                     }}
                     className="transition-all duration-300 hover:text-[#FFBF00]"
                   >
-                    <MdEdit  />
+                    <MdEdit />
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
@@ -367,7 +353,12 @@ const Body = () => {
             <div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="transition-all duration-300 hover:text-[#FF0000]"><MdDelete/></Button>
+                  <Button
+                    variant="outline"
+                    className="transition-all duration-300 hover:text-[#FF0000]"
+                  >
+                    <MdDelete />
+                  </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -380,7 +371,14 @@ const Body = () => {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => { deleteTask(item._id) }} className="hover:bg-[#FF0000]">Continue</AlertDialogAction>
+                    <AlertDialogAction
+                      onClick={() => {
+                        deleteTask(item._id);
+                      }}
+                      className="hover:bg-[#FF0000]"
+                    >
+                      Continue
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

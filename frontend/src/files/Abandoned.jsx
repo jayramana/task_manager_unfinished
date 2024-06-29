@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { HiCheck } from "react-icons/hi";
+import { FaBan } from "react-icons/fa";
+
 import { useNavigate } from "react-router-dom";
 import {
   Select,
@@ -11,9 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-const Completed = () => {
+import { FaB } from "react-icons/fa6";
+
+const Abandoned = () => {
   const [data, setData] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     const getAllData = async () => {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URI}`);
@@ -22,14 +25,19 @@ const Completed = () => {
     };
     getAllData();
   }, []);
-  
 
   console.log(data);
   return (
     <main className="h-screen flex flex-col items-center gap-[2rem]">
-      <h1 className="self-start text-[2rem] font-mono font-bold">Completed Tasks</h1>
+      <h1 className="self-start font-mono text-[2rem] font-bold">
+        Pending Tasks
+      </h1>
       <div className="self-start pl-[2rem]">
-      <Select onValueChange={(e)=>{navigate(`${e}`)}}>
+        <Select
+          onValueChange={(e) => {
+            navigate(`${e}`);
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter" />
           </SelectTrigger>
@@ -42,24 +50,26 @@ const Completed = () => {
             </SelectGroup>
           </SelectContent>
         </Select>
-
       </div>
-      <div className="flex flex-col gap-[2rem] "> 
-      {data
-        .filter((item) => item.status === "completed")
-        .map((items) => (
-          <div key={items._id} className="flex gap-[.5rem] bg-[#F5F5F5] w-[70vw] justify-between p-[1rem] rounded-xl shadow-lg ">
-            <p className="font-mono text-[#00693E] text-lg">{items.task_name}</p>
-            <button>
-            {/* 3EB489 */}
-              <HiCheck className="text-[#228B22]" /> 
-            </button>
-          </div>
-        ))}
-        
-        </div>
+      <div className="flex flex-col gap-[2rem]">
+        {data
+          .filter((item) => item.status === "abandoned")
+          .map((items) => (
+            <div
+              key={items._id}
+              className="flex gap-[.5rem] w-[70vw] bg-[#F5F5F5] justify-between p-[1rem] rounded-xl shadow-lg"
+            >
+              <p className="font-mono text-[#f03e3e] text-lg">
+                {items.task_name}
+              </p>
+              <button>
+                <FaBan className="text-[#f03e3e]" />
+              </button>
+            </div>
+          ))}
+      </div>
     </main>
   );
 };
 
-export default Completed;
+export default Abandoned;
